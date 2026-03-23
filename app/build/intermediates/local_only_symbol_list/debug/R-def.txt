@@ -1,0 +1,16 @@
+R_DEF: Internal format may change without notice
+local
+drawable bg_street
+drawable ic_launcher
+drawable player
+drawable wall_concrete
+drawable zombie_armored
+drawable zombie_boss
+drawable zombie_death
+drawable zombie_walk
+raw music_calm
+raw music_intense
+raw sfx_empty_click
+raw sfx_gunshot
+raw sfx_reload_done
+raw sfx_zombie_growl

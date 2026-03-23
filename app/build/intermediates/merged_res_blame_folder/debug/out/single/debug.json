@@ -1,0 +1,58 @@
+[
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/drawable_zombie_boss.png.flat",
+        "source": "com.deadpeek.game.app-main-30:/drawable/zombie_boss.png"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/drawable_wall_concrete.png.flat",
+        "source": "com.deadpeek.game.app-main-30:/drawable/wall_concrete.png"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/raw_sfx_empty_click.ogg.flat",
+        "source": "com.deadpeek.game.app-main-30:/raw/sfx_empty_click.ogg"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/raw_music_calm.ogg.flat",
+        "source": "com.deadpeek.game.app-main-30:/raw/music_calm.ogg"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/raw_music_intense.ogg.flat",
+        "source": "com.deadpeek.game.app-main-30:/raw/music_intense.ogg"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/raw_sfx_zombie_growl.ogg.flat",
+        "source": "com.deadpeek.game.app-main-30:/raw/sfx_zombie_growl.ogg"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/drawable_ic_launcher.png.flat",
+        "source": "com.deadpeek.game.app-main-30:/drawable/ic_launcher.png"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/drawable_zombie_death.png.flat",
+        "source": "com.deadpeek.game.app-main-30:/drawable/zombie_death.png"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/drawable_player.png.flat",
+        "source": "com.deadpeek.game.app-main-30:/drawable/player.png"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/drawable_zombie_armored.png.flat",
+        "source": "com.deadpeek.game.app-main-30:/drawable/zombie_armored.png"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/raw_sfx_gunshot.ogg.flat",
+        "source": "com.deadpeek.game.app-main-30:/raw/sfx_gunshot.ogg"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/raw_sfx_reload_done.ogg.flat",
+        "source": "com.deadpeek.game.app-main-30:/raw/sfx_reload_done.ogg"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/drawable_zombie_walk.png.flat",
+        "source": "com.deadpeek.game.app-main-30:/drawable/zombie_walk.png"
+    },
+    {
+        "merged": "com.deadpeek.game.app-merged_res-28:/drawable_bg_street.png.flat",
+        "source": "com.deadpeek.game.app-main-30:/drawable/bg_street.png"
+    }
+]
