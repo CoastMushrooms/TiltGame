@@ -6,41 +6,37 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-/**
- * TiltController
- *
- * Maps physical phone orientation to game peek state:
- *
- *   Portrait  (phone upright)          → HIDDEN,  peekAmount = 0.0
- *   Tilt LEFT  (top tilts left)        → LEFT,    peekAmount 0.0 → 1.0
- *   Tilt RIGHT (top tilts right)       → RIGHT,   peekAmount 0.0 → 1.0
- *
- * peekAmount = 0 means just starting to peek, 1 = fully landscape.
- */
 public class TiltController implements SensorEventListener {
 
     public enum PeekSide { HIDDEN, LEFT, RIGHT }
 
     private final SensorManager sensorManager;
-    private final Sensor        rotationSensor;
+    private final Sensor         rotationSensor;
 
     private PeekSide side       = PeekSide.HIDDEN;
     private float    peekAmount = 0f;
 
-    // Roll thresholds (radians)
-    // 0 = upright portrait, PI/2 ≈ 1.57 = fully landscape
-    private static final float PORTRAIT_THRESHOLD  = 0.20f; // ~11° — still hidden
-    private static final float LANDSCAPE_THRESHOLD = 1.30f; // ~75° — fully peeked
+    // --- NEW: PC Support Variables ---
+    private PeekSide manualSide = PeekSide.HIDDEN;
+    private float manualAmount = 0f;
+
+    private static final float PORTRAIT_THRESHOLD  = 0.20f;
+    private static final float LANDSCAPE_THRESHOLD = 1.30f;
 
     public TiltController(Context context) {
         sensorManager  = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
     }
 
+    // NEW: Method for GameView to call when A/D or Arrows are pressed
+    public void setManualPeek(PeekSide side, float amount) {
+        this.manualSide = side;
+        this.manualAmount = amount;
+    }
+
     public void register() {
         if (rotationSensor != null)
-            sensorManager.registerListener(this, rotationSensor,
-                    SensorManager.SENSOR_DELAY_GAME);
+            sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_GAME);
     }
 
     public void unregister() {
@@ -51,15 +47,14 @@ public class TiltController implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() != Sensor.TYPE_ROTATION_VECTOR) return;
 
+        // If keyboard is active, ignore the physical sensor
+        if (manualSide != PeekSide.HIDDEN) return;
+
         float[] rotMatrix = new float[9];
         SensorManager.getRotationMatrixFromVector(rotMatrix, event.values);
-
         float[] orientation = new float[3];
         SensorManager.getOrientation(rotMatrix, orientation);
 
-        // orientation[2] = roll
-        // negative roll = tilting phone top to the left
-        // positive roll = tilting phone top to the right
         float roll    = orientation[2];
         float absRoll = Math.abs(roll);
 
@@ -67,8 +62,7 @@ public class TiltController implements SensorEventListener {
             side       = PeekSide.HIDDEN;
             peekAmount = 0f;
         } else {
-            float raw  = (absRoll - PORTRAIT_THRESHOLD)
-                    / (LANDSCAPE_THRESHOLD - PORTRAIT_THRESHOLD);
+            float raw  = (absRoll - PORTRAIT_THRESHOLD) / (LANDSCAPE_THRESHOLD - PORTRAIT_THRESHOLD);
             peekAmount = Math.min(1f, Math.max(0f, raw));
             side       = (roll < 0) ? PeekSide.LEFT : PeekSide.RIGHT;
         }
@@ -77,17 +71,25 @@ public class TiltController implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
-    public float    getPeekAmount()      { return peekAmount; }
-    public PeekSide getSide()            { return side; }
-    public boolean  isHidden()           { return side == PeekSide.HIDDEN; }
-    public boolean  isPeekingLeft()      { return side == PeekSide.LEFT;   }
-    public boolean  isPeekingRight()     { return side == PeekSide.RIGHT;  }
-    public boolean  isFullyPeeked()      { return peekAmount >= 0.85f;     }
+    // GETTERS: These now return the Manual value if it's active
+    public float getPeekAmount() { 
+        return (manualSide != PeekSide.HIDDEN) ? manualAmount : peekAmount; 
+    }
 
-    /** Legacy -1..+1 normalised value */
+    public PeekSide getSide() { 
+        return (manualSide != PeekSide.HIDDEN) ? manualSide : side; 
+    }
+
+    public boolean isHidden()       { return getSide() == PeekSide.HIDDEN; }
+    public boolean isPeekingLeft()  { return getSide() == PeekSide.LEFT;   }
+    public boolean isPeekingRight() { return getSide() == PeekSide.RIGHT;  }
+    public boolean isFullyPeeked()  { return getPeekAmount() >= 0.85f;     }
+
     public float getNormalizedRoll() {
-        if (side == PeekSide.LEFT)  return -peekAmount;
-        if (side == PeekSide.RIGHT) return  peekAmount;
+        PeekSide s = getSide();
+        float a = getPeekAmount();
+        if (s == PeekSide.LEFT)  return -a;
+        if (s == PeekSide.RIGHT) return  a;
         return 0f;
     }
 }

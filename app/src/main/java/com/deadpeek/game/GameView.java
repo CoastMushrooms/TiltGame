@@ -17,24 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * GameView — master SurfaceView for Dead Peek.
- *
- * ORIENTATION MODEL:
- *   Portrait  = player hidden behind wall. Safe zone. Can reload here.
- *   Tilt left = player peeks out left side. Zombies approach from far left.
- *   Tilt right= player peeks out right side. Zombies approach from far right.
- *
- * peekAmount (0→1) drives how much of the battlefield is revealed.
- * At peekAmount=0 only the wall is visible. At 1 the full side-scrolling
- * battlefield is on screen.
- *
- * GAME STATES:
- *   BRIEFING  → per-level intro card (tap to start)
- *   RUNNING   → active gameplay
- *   LEVEL_CLEAR → wave cleared, tap to next level
- *   GAME_OVER → lives depleted, tap to retry
- */
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     // ── States ────────────────────────────────────────────────────────────────
@@ -105,10 +88,40 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super(context, attrs);
         getHolder().addCallback(this);
         setFocusable(true);
+        setFocusableInTouchMode(true); // Required for keys to work in views
+        requestFocus(); 
         initPaints();
         tilt  = new TiltController(context);
         sound = new SoundManager(context);
         sound.init();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, android.view.KeyEvent event) {
+        switch (keyCode) {
+            case android.view.KeyEvent.KEYCODE_A:
+            case android.view.KeyEvent.KEYCODE_DPAD_LEFT:
+                tilt.setManualPeek(TiltController.PeekSide.LEFT, 1.0f);
+                return true;
+            case android.view.KeyEvent.KEYCODE_D:
+            case android.view.KeyEvent.KEYCODE_DPAD_RIGHT:
+                tilt.setManualPeek(TiltController.PeekSide.RIGHT, 1.0f);
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, android.view.KeyEvent event) {
+        if (keyCode == android.view.KeyEvent.KEYCODE_A || 
+            keyCode == android.view.KeyEvent.KEYCODE_D ||
+            keyCode == android.view.KeyEvent.KEYCODE_DPAD_LEFT || 
+            keyCode == android.view.KeyEvent.KEYCODE_DPAD_RIGHT) {
+            
+            tilt.setManualPeek(TiltController.PeekSide.HIDDEN, 0f);
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     // ─── SurfaceHolder.Callback ───────────────────────────────────────────────
