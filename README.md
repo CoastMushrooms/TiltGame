@@ -28,3 +28,5 @@ To install the game directly on an Android device:
 
 ## License
 Refer to the LICENSE file for more information.
+# Dead Peek - Android Zombie Shooter
+Controls: Tilt phone to peek, tap to shoot. (PC: A/D/Arrows to peek, Click to shoot)
